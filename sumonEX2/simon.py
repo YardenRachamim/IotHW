@@ -15,7 +15,7 @@ greenLED = 18
 gyro_data_perm = 0
 greenFreq = 659
 
-event_happened = False
+event_happened = (False, -1)
 
 # Red
 redBTN = 19
@@ -125,8 +125,9 @@ def user_playing(turn):
             #remove_detection()
             break
 
-        elif event_happened:
-            event_happened = False
+        elif event_happened[0]:
+            event_happened[0] = False
+            user_input.append(event_happened[1])
             break
 
         # elif GPIO.event_detected(redBTN):
@@ -212,7 +213,7 @@ def red_pushed(channel):
     led_sound(redFreq)
     sleep(sleep_time)
     GPIO.output(redLED, GPIO.LOW)
-    event_happened = True
+    event_happened = (True, redLED)
 
 
 def blue_pushed(channel):
@@ -222,7 +223,7 @@ def blue_pushed(channel):
     led_sound(blueFreq)
     sleep(sleep_time)
     GPIO.output(blueLED, GPIO.LOW)
-    event_happened = True
+    event_happened = (True, blueLED)
 
 
 def yellow_pushed(channel):
@@ -233,7 +234,7 @@ def yellow_pushed(channel):
     led_sound(yellowFreq)
     sleep(sleep_time)
     GPIO.output(yellowLED, GPIO.LOW)
-    event_happened = True
+    event_happened = event_happened = (True, yellowLED)
     
 
 
