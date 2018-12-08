@@ -18,7 +18,7 @@ redLED = 23
 redFreq = 440
 
 # Blue
-blueBTN = 13
+blueBTN = 5
 blueLED = 25
 blueFreq = 784
 
