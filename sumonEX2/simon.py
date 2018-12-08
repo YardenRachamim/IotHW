@@ -111,24 +111,28 @@ def user_playing(turn):
     # Get user push value
     while True:
         if GPIO.event_detected(greenBTN):
+            print("green event detected")
             green_pushed()
             user_input.append(greenLED)
             remove_detection()
             break
 
         elif GPIO.event_detected(redBTN):
+            print("red event detected")
             red_pushed()
             user_input.append(redLED)
             remove_detection()
             break
 
         elif GPIO.event_detected(blueBTN):
+            print("blue event detected")
             blue_pushed()
             user_input.append(blueLED)
             remove_detection()
             break
 
         elif GPIO.event_detected(yellowFlameSense):
+            print("yellow event detected")
             yellow_pushed()
             user_input.append(yellowLED)
             remove_detection()
@@ -217,7 +221,6 @@ def yellow_pushed():
 
 # Excute sound for each led
 def led_sound(freq):
-    print("Inside ledSound")
     wiringpi.softToneWrite(soundPIN, freq)
     sleep(sleep_tone)
     wiringpi.softToneWrite(soundPIN, 0)
