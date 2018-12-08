@@ -162,10 +162,10 @@ def remove_detection():
 
 # Add detection to all buttons
 def add_detection():
-    GPIO.add_event_detect(greenBTN, GPIO.RISING, bouncetime=200)
-    GPIO.add_event_detect(redBTN, GPIO.RISING, bouncetime=200)
-    GPIO.add_event_detect(blueBTN, GPIO.RISING, bouncetime=200)
-    GPIO.add_event_detect(yellowFlameSense, GPIO.RISING, bouncetime=200)
+    GPIO.add_event_detect(greenBTN, GPIO.RISING)
+    GPIO.add_event_detect(redBTN, GPIO.RISING)
+    GPIO.add_event_detect(blueBTN, GPIO.RISING)
+    GPIO.add_event_detect(yellowFlameSense, GPIO.RISING)
 
 
 # Light the leds according to random_list values (computer plays!)
