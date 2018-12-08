@@ -61,7 +61,7 @@ turn = 0
 next_round = True
 
 # Led sleep time
-sleep_time = 0.3
+sleep_time = 0.6
 
 # Start of main #
 def main():
