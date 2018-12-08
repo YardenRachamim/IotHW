@@ -165,7 +165,7 @@ def add_detection():
     GPIO.add_event_detect(greenBTN, GPIO.RISING, bouncetime=200)
     GPIO.add_event_detect(redBTN, GPIO.RISING, bouncetime=200)
     GPIO.add_event_detect(blueBTN, GPIO.RISING, bouncetime=200)
-    GPIO.add_event_detect(yellowFlameSense, GPIO.RISING, bouncetime=200)
+    GPIO.add_event_detect(yellowFlameSense, GPIO.BOTH, bouncetime=200)
 
 
 # Light the leds according to random_list values (computer plays!)
