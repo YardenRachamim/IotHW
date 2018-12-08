@@ -217,6 +217,7 @@ def yellow_pushed():
 
 # Excute sound for each led
 def led_sound(freq):
+    print("Inside ledSound")
     wiringpi.softToneWrite(soundPIN, freq)
     sleep(sleep_tone)
     wiringpi.softToneWrite(soundPIN, 0)
