@@ -197,7 +197,7 @@ def get_random_value():
 
 
 # Handeling what to do when button is pushed
-def green_pushed(channel):
+def green_pushed():
     print("green was pushed")
     GPIO.output(greenLED, GPIO.HIGH)
     led_sound(greenFreq)
