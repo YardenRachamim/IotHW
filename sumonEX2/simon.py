@@ -92,7 +92,7 @@ def main():
         # User input
         while True == user_playing(turn):
               turn += 1
-              add_detection()
+              #add_detection()
               print("turn is = " + (str) (turn))
 
               # Initialize iff the user have a next turn
@@ -121,29 +121,29 @@ def user_playing(turn):
             print("green event detected")
             green_pushed()
             user_input.append(greenLED)
-            remove_detection()
+            #remove_detection()
             break
 
-        elif GPIO.event_detected(redBTN):
-            print("red event detected")
-            red_pushed()
-            user_input.append(redLED)
-            remove_detection()
-            break
+        # elif GPIO.event_detected(redBTN):
+        #     print("red event detected")
+        #     red_pushed()
+        #     user_input.append(redLED)
+        #     remove_detection()
+        #     break
 
-        elif GPIO.event_detected(blueBTN):
-            print("blue event detected")
-            blue_pushed()
-            user_input.append(blueLED)
-            remove_detection()
-            break
+        # elif GPIO.event_detected(blueBTN):
+        #     print("blue event detected")
+        #     blue_pushed()
+        #     user_input.append(blueLED)
+        #     remove_detection()
+        #     break
 
-        elif GPIO.event_detected(yellowFlameSense):
-            print("yellow event detected")
-            yellow_pushed()
-            user_input.append(yellowLED)
-            remove_detection()
-            break
+        # elif GPIO.event_detected(yellowFlameSense):
+        #     print("yellow event detected")
+        #     yellow_pushed()
+        #     user_input.append(yellowLED)
+        #     remove_detection()
+        #     break
 
     print((str) (user_input) + " = user")
     print((str) (random_list) + " = random")
@@ -259,6 +259,13 @@ def set():
     # Button setup
     for pin in btnPIN:
         GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+    
+    # Add event detections
+    GPIO.add_event_detect(redBTN, GPIO.RISING, bouncetime=300, callback=red_pushed)
+    GPIO.add_event_detect(blueBTN, GPIO.RISING, bouncetime=300, callback=blue_pushed)
+    GPIO.add_event_detect(yellowFlameSense, GPIO.BOTH, bouncetime=300, callback=yellow_pushed)
+    
 
 
 # All lights on
