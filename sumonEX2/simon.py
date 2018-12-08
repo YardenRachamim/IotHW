@@ -12,10 +12,10 @@ from mpu6050 import mpu6050
 
 # Green
 greenLED = 18
-greenAccSense = False
 gyro_data_perm = 0
 greenFreq = 659
 
+event_happened = False
 
 # Red
 redBTN = 19
@@ -114,6 +114,7 @@ def user_playing(turn):
     global next_round
     global gyro_data_perm
     global sensor
+    global event_happened
 
     # Get user push value
     while True:
@@ -122,6 +123,10 @@ def user_playing(turn):
             green_pushed()
             user_input.append(greenLED)
             #remove_detection()
+            break
+
+        elif event_happened:
+            event_happened = False
             break
 
         # elif GPIO.event_detected(redBTN):
@@ -201,28 +206,34 @@ def green_pushed(channel):
 
 
 def red_pushed(channel):
+    global event_happened
     print("red was pushed")
     GPIO.output(redLED, GPIO.HIGH)
     led_sound(redFreq)
     sleep(sleep_time)
     GPIO.output(redLED, GPIO.LOW)
+    event_happened = True
 
 
 def blue_pushed(channel):
+    global event_happened
     print("blue was pushed")
     GPIO.output(blueLED, GPIO.HIGH)
     led_sound(blueFreq)
     sleep(sleep_time)
     GPIO.output(blueLED, GPIO.LOW)
+    event_happened = True
 
 
 def yellow_pushed(channel):
+    global event_happened
     print("Yellow sensed Fire")
 
     GPIO.output(yellowLED, GPIO.HIGH)
     led_sound(yellowFreq)
     sleep(sleep_time)
     GPIO.output(yellowLED, GPIO.LOW)
+    event_happened = True
     
 
 
