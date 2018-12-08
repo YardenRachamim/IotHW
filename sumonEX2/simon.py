@@ -1,5 +1,7 @@
 # Yarden Rachamim: 204623284
 # Maya Kerem: 204818181
+# Ori Zilka: 312277650
+# https://youtu.be/cjgpjhTNwn4
 
 import RPi.GPIO as GPIO
 from time import sleep
@@ -111,10 +113,11 @@ def main():
 def user_playing(turn):
     global next_round
     global gyro_data_perm
+    global sensor
 
     # Get user push value
     while True:
-        if abs(sensor.get_gyro_data()) > gyro_data_perm + 10:
+        if abs(sensor.get_gyro_data().get('y')) > gyro_data_perm + 10:
             print("green event detected")
             green_pushed()
             user_input.append(greenLED)
@@ -232,13 +235,15 @@ def led_sound(freq):
 
 # Set the enviorment
 def set():
+    global gyro_data
+    global sensor
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
     # Acc setup
     sensor = mpu6050(0x68)
     gyro_data = sensor.get_gyro_data()
-    gyro_data_perm = abs(gyro_data)
+    gyro_data_perm = abs(gyro_data.get('y'))
 
     # Flame sensor setup
     GPIO.setup(yellowFlameSense, GPIO.IN)
