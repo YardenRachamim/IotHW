@@ -80,7 +80,7 @@ def main():
 
     # Initialize the enviorment
     set()
-    add_detection()
+    #add_detection()
 
     # Game Logic
     while next_round:
@@ -191,7 +191,7 @@ def get_random_value():
 
 
 # Handeling what to do when button is pushed
-def green_pushed():
+def green_pushed(channel):
     print("green was pushed")
     GPIO.output(greenLED, GPIO.HIGH)
     led_sound(greenFreq)
@@ -200,7 +200,7 @@ def green_pushed():
     #sleep(sleep_time)
 
 
-def red_pushed():
+def red_pushed(channel):
     print("red was pushed")
     GPIO.output(redLED, GPIO.HIGH)
     led_sound(redFreq)
@@ -208,7 +208,7 @@ def red_pushed():
     GPIO.output(redLED, GPIO.LOW)
 
 
-def blue_pushed():
+def blue_pushed(channel):
     print("blue was pushed")
     GPIO.output(blueLED, GPIO.HIGH)
     led_sound(blueFreq)
@@ -216,7 +216,7 @@ def blue_pushed():
     GPIO.output(blueLED, GPIO.LOW)
 
 
-def yellow_pushed():
+def yellow_pushed(channel):
     print("Yellow sensed Fire")
 
     GPIO.output(yellowLED, GPIO.HIGH)
