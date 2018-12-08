@@ -5,12 +5,15 @@ import RPi.GPIO as GPIO
 from time import sleep
 import random
 import wiringpi
+from mpu6050 import mpu6050
 
 
 # Green
-greenBTN = 26
 greenLED = 18
+greenAccSense = False
+gyro_data_perm = 0
 greenFreq = 659
+
 
 # Red
 redBTN = 19
@@ -31,7 +34,7 @@ yellowFreq = 523
 ledPIN = [greenLED, redLED, blueLED, yellowLED]
 
 # Buttons list
-btnPIN = [greenBTN, redBTN, blueBTN]
+btnPIN = [redBTN, blueBTN]
 
 # Buttons list reversed - for game ending needs.
 reverse_ledPIN = [yellowLED, blueLED, redLED, greenLED]
@@ -107,10 +110,11 @@ def main():
 # One turn
 def user_playing(turn):
     global next_round
+    global gyro_data_perm
 
     # Get user push value
     while True:
-        if GPIO.event_detected(greenBTN):
+        if abs(sensor.get_gyro_data()) > gyro_data_perm + 10:
             print("green event detected")
             green_pushed()
             user_input.append(greenLED)
@@ -154,7 +158,7 @@ def user_playing(turn):
 
 # Remove detection from all buttons
 def remove_detection():
-    GPIO.remove_event_detect(greenBTN)
+    # GPIO.remove_event_detect(greenBTN)
     GPIO.remove_event_detect(redBTN)
     GPIO.remove_event_detect(blueBTN)
     GPIO.remove_event_detect(yellowFlameSense)
@@ -162,7 +166,7 @@ def remove_detection():
 
 # Add detection to all buttons
 def add_detection():
-    GPIO.add_event_detect(greenBTN, GPIO.RISING, bouncetime=200)
+    # GPIO.add_event_detect(greenBTN, GPIO.RISING, bouncetime=200)
     GPIO.add_event_detect(redBTN, GPIO.RISING, bouncetime=200)
     GPIO.add_event_detect(blueBTN, GPIO.RISING, bouncetime=200)
     GPIO.add_event_detect(yellowFlameSense, GPIO.BOTH, bouncetime=200)
@@ -230,6 +234,11 @@ def led_sound(freq):
 def set():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
+
+    # Acc setup
+    sensor = mpu6050(0x68)
+    gyro_data = sensor.get_gyro_data()
+    gyro_data_perm = abs(gyro_data)
 
     # Flame sensor setup
     GPIO.setup(yellowFlameSense, GPIO.IN)
