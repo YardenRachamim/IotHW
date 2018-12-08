@@ -15,8 +15,7 @@ greenLED = 18
 gyro_data_perm = 0
 greenFreq = 659
 
-event_happened = (False, -1)
-
+event_happened = False
 # Red
 redBTN = 19
 redLED = 23
@@ -115,6 +114,7 @@ def user_playing(turn):
     global gyro_data_perm
     global sensor
     global event_happened
+    global user_input
 
     # Get user push value
     while True:
@@ -125,9 +125,8 @@ def user_playing(turn):
             #remove_detection()
             break
 
-        elif event_happened[0]:
-            event_happened[0] = False
-            user_input.append(event_happened[1])
+        elif event_happened:
+            event_happened = False
             break
 
         # elif GPIO.event_detected(redBTN):
@@ -208,33 +207,41 @@ def green_pushed():
 
 def red_pushed(channel):
     global event_happened
+    global user_input
+    
     print("red was pushed")
     GPIO.output(redLED, GPIO.HIGH)
     led_sound(redFreq)
     sleep(sleep_time)
     GPIO.output(redLED, GPIO.LOW)
-    event_happened = (True, redLED)
+    event_happened = True 
+    user_input.append(redLED)
 
 
 def blue_pushed(channel):
     global event_happened
+    global user_input
+
     print("blue was pushed")
     GPIO.output(blueLED, GPIO.HIGH)
     led_sound(blueFreq)
     sleep(sleep_time)
     GPIO.output(blueLED, GPIO.LOW)
-    event_happened = (True, blueLED)
+    event_happened = True 
+    user_input.append(blueBTN)
 
 
 def yellow_pushed(channel):
     global event_happened
+    global user_input
     print("Yellow sensed Fire")
 
     GPIO.output(yellowLED, GPIO.HIGH)
     led_sound(yellowFreq)
     sleep(sleep_time)
     GPIO.output(yellowLED, GPIO.LOW)
-    event_happened = event_happened = (True, yellowLED)
+    event_happened = event_happened = True
+    user_input.append(yellowLED)
     
 
 
