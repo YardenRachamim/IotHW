@@ -4,56 +4,76 @@
 import RPi.GPIO as GPIO
 from time import sleep
 import random
+import wiringpi
+
 
 # Green
 greenBTN = 26
 greenLED = 18
 greenFreq = 659
+
 # Red
 redBTN = 19
 redLED = 23
 redFreq = 440
+
 # Blue
 blueBTN = 13
 blueLED = 25
 blueFreq = 784
+
 # Yellow
-yellowBTN = 6
+yellowFlameSense = 17
 yellowLED = 12
 yellowFreq = 523
-# List
+
+# Leds list
 ledPIN = [greenLED, redLED, blueLED, yellowLED]
-btnPIN = [greenBTN, redBTN, blueBTN, yellowBTN]
+
+# Buttons list
+btnPIN = [greenBTN, redBTN, blueBTN]
+
+# Buttons list reversed - for game ending needs.
 reverse_ledPIN = [yellowLED, blueLED, redLED, greenLED]
+
 # Sound
 soundPIN = 21
 sound_dic = {greenLED: greenFreq,
              redLED: redFreq,
              blueLED: blueFreq,
              yellowLED: yellowFreq}
+
+# Speaker sleep time
 sleep_tone = 0.3
 
 # Game Global Variables
+
 # Generate a random list
 random_list = []
+
 # User actual input
 user_input = []
+
 # User turn status
 turn = 0
+
 # User pressed the right buttons
 next_round = True
 
-sleep_time = 0.6
+# Led sleep time
+sleep_time = 0.3
 
-
-# Start of main
+# Start of main #
 def main():
+    # Global variables names
     global turn
     global user_input
     global next_round
+
     # User pressed the rigth button
     is_correct_btn =True
-    # Initialize all events
+
+    # Initialize the enviorment
     set()
     add_detection()
 
@@ -66,10 +86,11 @@ def main():
 
         # User input
         while True == user_playing(turn):
-              #
               turn += 1
               add_detection()
               print("turn is = " + (str) (turn))
+
+              # Initialize iff the user have a next turn
               if turn == len(random_list):
                   print("Initialize - end of turn")
                   turn = 0
@@ -77,13 +98,16 @@ def main():
                   next_round = True
                   break
 
+    # Game Over
     print("Sorry game ended")
     end_game()
-#END OF MAIN
 
-#START OF HELPER
+# END OF MAIN #
+
+# One turn
 def user_playing(turn):
     global next_round
+
     # Get user push value
     while True:
         if GPIO.event_detected(greenBTN):
@@ -91,40 +115,45 @@ def user_playing(turn):
             user_input.append(greenLED)
             remove_detection()
             break
+
         elif GPIO.event_detected(redBTN):
             red_pushed()
             user_input.append(redLED)
             remove_detection()
             break
+
         elif GPIO.event_detected(blueBTN):
             blue_pushed()
             user_input.append(blueLED)
             remove_detection()
             break
 
-        elif GPIO.event_detected(yellowBTN):
+        elif GPIO.event_detected(yellowFlameSense):
             yellow_pushed()
             user_input.append(yellowLED)
             remove_detection()
             break
-        # Cmpare first user_input[0] and random_list[0]
+
     print((str) (user_input) + " = user")
     print((str) (random_list) + " = random")
+
+    # If user pressed a wrong btn
     if user_input[turn] != random_list[turn]:
         print("Sorry wrong button!")
         next_round = False
         return False
 
+    # User have next turn
     return True
 
-
+# START OF HELPER #
 
 # Remove detection from all buttons
 def remove_detection():
     GPIO.remove_event_detect(greenBTN)
     GPIO.remove_event_detect(redBTN)
     GPIO.remove_event_detect(blueBTN)
-    GPIO.remove_event_detect(yellowBTN)
+    GPIO.remove_event_detect(yellowFlameSense)
 
 
 # Add detection to all buttons
@@ -132,10 +161,10 @@ def add_detection():
     GPIO.add_event_detect(greenBTN, GPIO.RISING, bouncetime=200)
     GPIO.add_event_detect(redBTN, GPIO.RISING, bouncetime=200)
     GPIO.add_event_detect(blueBTN, GPIO.RISING, bouncetime=200)
-    GPIO.add_event_detect(yellowBTN, GPIO.RISING, bouncetime=200)
+    GPIO.add_event_detect(yellowFlameSense, GPIO.BOTH, bouncetime=200)
 
 
-# Light the leds according to random_value
+# Light the leds according to random_list values (computer plays!)
 def light_leds():
    for led in random_list:
        GPIO.output(led, GPIO.HIGH)
@@ -145,12 +174,12 @@ def light_leds():
        sleep(sleep_time)
 
 
-# Generate random values
+# Generate random values(for computer)
 def get_random_value():
     random_list.append(ledPIN[random.randint(0,3)])
 
 
-# On button pushed
+# Handeling what to do when button is pushed
 def green_pushed():
     print("green was pushed")
     GPIO.output(greenLED, GPIO.HIGH)
@@ -163,12 +192,9 @@ def green_pushed():
 def red_pushed():
     print("red was pushed")
     GPIO.output(redLED, GPIO.HIGH)
-    #sleep(sleep_time)
     led_sound(redFreq)
     sleep(sleep_time)
     GPIO.output(redLED, GPIO.LOW)
-    #sleep(sleep_time)
-
 
 
 def blue_pushed():
@@ -177,15 +203,17 @@ def blue_pushed():
     led_sound(blueFreq)
     sleep(sleep_time)
     GPIO.output(blueLED, GPIO.LOW)
-    #sleep(sleep_time)
+
 
 def yellow_pushed():
-    print("Yellow was pushed")
+    print("Yellow sensed Fire")
+
     GPIO.output(yellowLED, GPIO.HIGH)
     led_sound(yellowFreq)
     sleep(sleep_time)
     GPIO.output(yellowLED, GPIO.LOW)
-    #sleep(sleep_time)
+    
+
 
 # Excute sound for each led
 def led_sound(freq):
@@ -194,16 +222,23 @@ def led_sound(freq):
     wiringpi.softToneWrite(soundPIN, 0)
 
 
-# Sound of a fauilere
-
-# Set from the beginning after cleanup()
+# Set the enviorment
 def set():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
+
+    # Flame sensor setup
+    GPIO.setup(yellowFlameSense, GPIO.IN)
+
+    # Sound setup
     wiringpi.wiringPiSetupGpio()
     wiringpi.softToneCreate(soundPIN)
+
+    # Led setup
     for pin in ledPIN:
         GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+    
+    # Button setup
     for pin in btnPIN:
         GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
@@ -236,6 +271,7 @@ def right_left_sound(led):
 def end_game():
     # all leds on, all sound on
     all_leds_sound()
+
     # right to left
     for led in ledPIN:
         right_left_sound(led)
